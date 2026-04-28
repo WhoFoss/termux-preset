@@ -4,5 +4,4 @@ printf '\033[16A'
 COLUMNS=28 neofetch --backend off 2>/dev/null | while IFS= read -r line; do
     printf '\033[28C%s\n' "$line"
 done
-printf '\033[?25h'
-printf '\033[0B\n'
+printf '\033[?25h\033[A'
