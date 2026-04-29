@@ -71,6 +71,17 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
+#### Autocompletion ###################
+
+# cycle through all matches with 'TAB' key
+bind 'TAB:menu-complete'
+
+# necessary for programmable completion
+shopt -s extglob
+
+# cd when entering just a path
+shopt -s autocd
+
 ############# Outros Utilitários
 alias n='nano'
 alias py='python'
