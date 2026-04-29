@@ -411,10 +411,9 @@ function clone() {
 
 ############# Tratamento de comando não encontrado
 command_not_found_handle() {
-   printf "$blue achei esse comando nao pow $red):\n"
-      return 127
-      }
-
+    echo -e '\033[1;31m[\033[1;33m!\033[1;31m]\033[0m Comando \033[1;36m'"$1"'\033[0m não encontrado.'
+    return 127
+}
 
 ############# Função personalizada para cd
 cd() {
