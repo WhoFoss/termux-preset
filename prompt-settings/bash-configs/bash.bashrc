@@ -43,7 +43,7 @@ print_logo() {
     fi
 }
 #print_logo
-sleep 0.4 && neofetch --backend sixel --source /sdcard/eu.png
+sleep 0.4 && neofetch --backend sixel --source ${HOME}/.config/neofetch/aesthetic.jpg
 center() {
   termwidth=$(stty size | cut -d" " -f2)
   padding="$(printf '%0.1s' ={1..500})"
