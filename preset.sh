@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 r="\033[1;31m" g="\033[1;32m" x="\033[0m"
 
