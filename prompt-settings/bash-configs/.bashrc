@@ -18,7 +18,8 @@ HISTCONTROL=ignoredups
 ################# Aliases #################
 
 ############# Comandos Básicos
-#alias ls='ls --color=auto'
+alias ls='lsd'
+alias ls='ls --color=auto'
 alias ll='ls -alF'
 alias l='ls -CF'
 alias rm='rm -i'
