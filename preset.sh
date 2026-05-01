@@ -15,13 +15,14 @@ for f in motd motd.sh motd-playstore; do
 done
 warn "Arquivos motd removidos"
 
-# URLs
+# URLs — formato: ["arquivo"]="destino|url"
 declare -A urls=(
-    ["termux.properties"]="https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/termux-configs/termux.properties"
-    [".nanorc"]="https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/shell-config/config-files/.nanorc"
-    ["colors.properties"]="https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/color-schemes/color-schemes"
-    ["font.ttf"]="https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/shell-config/config-files/font.ttf"
-    [".bashrc"]="https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/bash-configs/.bashrc"
+    ["termux.properties"]="$HOME/.termux|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/termux-configs/termux.properties"
+    [".nanorc"]="$HOME|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/shell-config/config-files/.nanorc"
+    ["colors.properties"]="$HOME/.termux|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/color-schemes/color-schemes"
+    ["font.ttf"]="$HOME/.termux|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/shell-config/config-files/font.ttf"
+    [".bashrc"]="$HOME|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/bash-configs/.bashrc"
+    ["bash.bashrc"]="$PREFIX/etc|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/bash-configs/bash.bashrc"
 )
 
 ok "Iniciando configurações do Termux..."
@@ -30,11 +31,12 @@ total=${#urls[@]}; i=0
 
 for arq in "${!urls[@]}"; do
     i=$((i+1))
-    dest=$([[ "$arq" =~ ^\. ]] && echo "$HOME" || echo "$HOME/.termux")
+    dest="${urls[$arq]%%|*}"
+    url="${urls[$arq]##*|}"
 
     [ -e "$dest/$arq" ] && cp "$dest/$arq" "$dest/$arq.bkp" && ok "Backup: $arq.bkp"
 
-    if curl -sLo "$dest/$arq" "${urls[$arq]}"; then
+    if curl -sLo "$dest/$arq" "$url"; then
         ok "[$i/$total] $arq aplicado"
     else
         err "[$i/$total] Falha: $arq"
