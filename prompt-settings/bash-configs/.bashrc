@@ -18,7 +18,7 @@ HISTCONTROL=ignoredups
 ################# Aliases #################
 
 ############# Comandos Básicos
-alias ls='ls --color=auto'
+#alias ls='ls --color=auto'
 alias ll='ls -alF'
 alias l='ls -CF'
 alias rm='rm -i'
@@ -39,9 +39,8 @@ alias tt='clear;termux-reload-settings && source ../usr/etc/bash.bashrc'
 alias ttsu='clear; tsu'
 alias ports='netstat -tuln'
 alias mem='ps aux --sort -rss'
-alias update='sudo apt update && sudo apt upgrade'
-alias upgrade='sudo apt update && sudo apt upgrade'
-alias updatezsh='source ~/.zshrc'
+alias update='apt update && apt upgrade'
+alias upgrade='pkg update -y && pkg upgrade -y'
 alias cdd='cd ~/Downloads'
 alias cdm='cd ~/Music'
 alias cdp='cd ~/Pictures'
@@ -50,7 +49,6 @@ alias cdw='cd ~/Workspace'
 alias cdt='cd ~/Termux'
 alias cds='cd ~/Scripts'
 alias vi='vim'
-alias updatepkg='pkg update && pkg upgrade'
 alias rmrf='rm -rf'
 alias mkdir='mkdir -p'
 
