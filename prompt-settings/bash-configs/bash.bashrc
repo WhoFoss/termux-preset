@@ -24,7 +24,7 @@ print_logo() {
 ⠀⠀⠀⠀⠀⠀⣿⠏⠀⠀⠀⠀⢀⠇⠈⡇⠀⠀⠀⠘⡎⣆⠀⠀⠀⢻⣧⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠈⠿⣶⣶⣶⣶⣶⣾⣶⣾⣷⣶⣶⣶⣶⣷⣾⣷⣶⣶⣾⡿"
     local logo_width=32
-    local term_width=$(tput cols)
+    local term_width=${COLUMNS:-80}
     local pad=$(( (term_width - logo_width) / 2 ))
     local padding=$(printf '%*s' "$pad" '')
 
@@ -46,7 +46,7 @@ else
 fi
 
 center() {
-  termwidth=$(stty size | cut -d" " -f2)
+  termwidth=${COLUMNS:-80}
   padding="$(printf '%0.1s' ={1..500})"
   printf '\033[1;31m<\033[38;5;27m%*.*s\033[1;31m{\033[1;33m%s\033[1;31m}\033[38;5;27m%*.*s\033[1;31m>\033[0m\n' 0 "$(((termwidth-4-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-3-${#1})/2))" "$padding"
 };center WhoFoss
