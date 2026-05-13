@@ -48,7 +48,7 @@ fi
 center() {
   termwidth=${COLUMNS:-80}
   padding="$(printf '%0.1s' ={1..500})"
-  printf '\033[1;31m<\033[38;5;27m%*.*s\033[1;31m{\033[1;33m%s\033[1;31m}\033[38;5;27m%*.*s\033[1;31m>\033[0m\n' 0 "$(((termwidth-4-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-3-${#1})/2))" "$padding"
+  printf '\033[1;31m◄\033[38;5;27m%*.*s\033[1;31m❪\033[1;33m%s\033[1;31m❫\033[38;5;27m%*.*s\033[1;31m►\033[0m\n' 0 "$(((termwidth-4-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-3-${#1})/2))" "$padding"
 };center WhoFoss
 
 #PS1 USER/ROOT
