@@ -2,7 +2,7 @@
 
 PKG_PACKAGES=(
     "wget" "git" "vim" "bat" "lsd" "ruby"
-    "neofetch" "lolcat"
+    "neofetch" "lolcat" "fzf"
     "tput:ncurses-utils"
     "img2sixel:libsixel"
     "img2sixel:x264"
