@@ -352,6 +352,24 @@ hrun() {
     }
 }
 
+ff() {
+    local selected=$(fzf \
+        --height=80% \
+        --border \
+        --prompt="Buscar: " \
+        --preview='cat {} 2>/dev/null | head -50' \
+        --preview-window='down:50%:wrap' \
+        < <(find ${1:-.} 2>/dev/null))
+
+    [[ -z "$selected" ]] && return
+
+    if [[ -d "$selected" ]]; then
+        cd "$selected"
+    elif [[ -f "$selected" ]]; then
+        nano "$selected"
+    fi
+}
+
 ############# Encontra arquivos fonte Python
 function py-src() {
     local USAGE="uso: py-src [diretório]"
