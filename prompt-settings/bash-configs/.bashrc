@@ -271,6 +271,22 @@ function trim-tab() {
     done
 }
 
+pkgm() {
+    local selected=$(apt-cache pkgnames 2>/dev/null | sort | fzf \
+        --multi \
+        --height=80% \
+        --border \
+        --prompt="Selecione pacotes: " \
+        --preview='apt-cache show {} 2>/dev/null | head -100' \
+        --preview-window='down:50%:wrap' \
+        --bind='ctrl-a:select-all,ctrl-d:deselect-all')
+    
+    [[ -n "$selected" ]] && {
+        echo -e "\nInstalando: $selected"
+        pkg install -y $selected
+    }
+}
+
 ############# Análise de assinatura de código
 function code-analysis() {
     for i in $@; do
