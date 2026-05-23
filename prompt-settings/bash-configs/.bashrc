@@ -338,6 +338,20 @@ function c-src() {
     find ${SRC} -regextype posix-extended -regex "^.*\.(cpp|hpp|c|h)$" | grep -ve "^\.\/debian"
 }
 
+hrun() {
+    local selected=$(history | awk '{$1=""; print $0}' | sort -u | fzf \
+        --height=80% \
+        --border \
+        --prompt="Historico: " \
+        --preview='echo {}' \
+        --preview-window='down:20%:wrap')
+
+    [[ -n "$selected" ]] && {
+        echo -e "\nExecutando: $selected"
+        eval "$selected"
+    }
+}
+
 ############# Encontra arquivos fonte Python
 function py-src() {
     local USAGE="uso: py-src [diretório]"
