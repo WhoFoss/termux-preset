@@ -31,10 +31,15 @@ alias du='du -h'
 alias top='top -o %CPU'
 alias h='history'
 alias c='clear'
+alias less='less -S'
 alias e='exit'
+alias rm -rfv='trash'
+alias cat="bat"
 alias s='sudo'
-
+alias o='sudo'
 ############# Gerenciamento de Arquivos e Diretórios
+alias src='source ~/.bashrc'
+alias srcc='clear && source ~/.bashrc'
 alias lists='nano /etc/apt/sources.list'
 alias tt='clear;termux-reload-settings && source ../usr/etc/bash.bashrc'
 alias ttsu='clear; tsu'
