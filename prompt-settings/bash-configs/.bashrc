@@ -1,6 +1,6 @@
 # *********************************************
-# * local: ${HOME}/.bashrc                   
-# * WhoFoss                 
+# * local: ${HOME}/.bashrc
+# * WhoFoss
 # -----------------------------------------------
 # * Configurações Gerais
 # -----------------------------------------------
@@ -33,10 +33,10 @@ alias h='history'
 alias c='clear'
 alias less='less -S'
 alias e='exit'
-alias rm -rfv='trash'
 alias cat="bat"
 alias s='sudo'
 alias o='sudo'
+
 ############# Gerenciamento de Arquivos e Diretórios
 alias src='source ~/.bashrc'
 alias srcc='clear && source ~/.bashrc'
@@ -57,6 +57,13 @@ alias cds='cd ~/Scripts'
 alias vi='vim'
 alias rmrf='rm -rf'
 alias mkdir='mkdir -p'
+
+# Remove com segurança via trash-cli (em vez de exclusão definitiva)
+rm-trash() {
+    command -v trash >/dev/null 2>&1 || { echo >&2 "trash-cli não encontrado. Instale com: pkg install trash-cli"; return 1; }
+    trash "$@"
+}
+alias rmt='rm-trash'
 
 ############# Navegação Rápida em Diretórios
 alias ..='cd ..'
@@ -141,6 +148,9 @@ alias tb="nc termbin.com 9999 2>/dev/null || echo 'Falha ao conectar com termbin
 alias google='ping -t 3 www.google.com.br' # Ping ao Google a cada 3 segundos
 alias uol='ping -t 3 www.uol.com.br' # Ping ao UOL a cada 3 segundos
 
+############# GoFile
+alias gofile="~/gofile"
+
 ################# Funções #################
 
 ############# Auxiliar de busca no histórico
@@ -158,6 +168,40 @@ function his() {
 
     # Exibe os resultados
     echo "$commandlog"
+}
+
+############# Buscador interativo no histórico (fzf)
+hrun() {
+    local selected=$(history | awk '{$1=""; print $0}' | sort -u | fzf \
+        --height=80% \
+        --border \
+        --prompt="Historico: " \
+        --preview='echo {}' \
+        --preview-window='down:20%:wrap')
+
+    [[ -n "$selected" ]] && {
+        echo -e "\nExecutando: $selected"
+        eval "$selected"
+    }
+}
+
+############# Buscador interativo de arquivos/diretórios (fzf)
+ff() {
+    local selected=$(fzf \
+        --height=80% \
+        --border \
+        --prompt="Buscar: " \
+        --preview='cat {} 2>/dev/null | head -50' \
+        --preview-window='down:50%:wrap' \
+        < <(find ${1:-.} 2>/dev/null))
+
+    [[ -z "$selected" ]] && return
+
+    if [[ -d "$selected" ]]; then
+        cd "$selected"
+    elif [[ -f "$selected" ]]; then
+        nano "$selected"
+    fi
 }
 
 ############# Localizador de IP
@@ -181,6 +225,23 @@ function @ip-resolver() {
         dig +short @resolver1.opendns.com $1
         shift
     done
+}
+
+############# Seletor/instalador de pacotes (fzf)
+pkgm() {
+    local selected=$(apt-cache pkgnames 2>/dev/null | sort | fzf \
+        --multi \
+        --height=80% \
+        --border \
+        --prompt="Selecione pacotes: " \
+        --preview='apt-cache show {} 2>/dev/null | head -100' \
+        --preview-window='down:50%:wrap' \
+        --bind='ctrl-a:select-all,ctrl-d:deselect-all')
+
+    [[ -n "$selected" ]] && {
+        echo -e "\nInstalando: $selected"
+        pkg install -y $selected
+    }
 }
 
 ############# Validador de arquivos JSON
@@ -276,22 +337,6 @@ function trim-tab() {
     done
 }
 
-pkgm() {
-    local selected=$(apt-cache pkgnames 2>/dev/null | sort | fzf \
-        --multi \
-        --height=80% \
-        --border \
-        --prompt="Selecione pacotes: " \
-        --preview='apt-cache show {} 2>/dev/null | head -100' \
-        --preview-window='down:50%:wrap' \
-        --bind='ctrl-a:select-all,ctrl-d:deselect-all')
-    
-    [[ -n "$selected" ]] && {
-        echo -e "\nInstalando: $selected"
-        pkg install -y $selected
-    }
-}
-
 ############# Análise de assinatura de código
 function code-analysis() {
     for i in $@; do
@@ -341,38 +386,6 @@ function c-src() {
     local SRC=.
     [ -n "$1" ] && local SRC="$1"
     find ${SRC} -regextype posix-extended -regex "^.*\.(cpp|hpp|c|h)$" | grep -ve "^\.\/debian"
-}
-
-hrun() {
-    local selected=$(history | awk '{$1=""; print $0}' | sort -u | fzf \
-        --height=80% \
-        --border \
-        --prompt="Historico: " \
-        --preview='echo {}' \
-        --preview-window='down:20%:wrap')
-
-    [[ -n "$selected" ]] && {
-        echo -e "\nExecutando: $selected"
-        eval "$selected"
-    }
-}
-
-ff() {
-    local selected=$(fzf \
-        --height=80% \
-        --border \
-        --prompt="Buscar: " \
-        --preview='cat {} 2>/dev/null | head -50' \
-        --preview-window='down:50%:wrap' \
-        < <(find ${1:-.} 2>/dev/null))
-
-    [[ -z "$selected" ]] && return
-
-    if [[ -d "$selected" ]]; then
-        cd "$selected"
-    elif [[ -f "$selected" ]]; then
-        nano "$selected"
-    fi
 }
 
 ############# Encontra arquivos fonte Python
@@ -484,6 +497,7 @@ function restore-bashrc() {
     fi
 }
 
+############# Restaura bash.bashrc do Termux a partir de backup
 crb() {
     b="/data/data/com.termux/files/usr/etc/bash.bashrc"
     [[ ! -f "$b" || $(wc -c < "$b" 2>/dev/null || echo 0) -lt 100 ]] && \
