@@ -2,8 +2,6 @@
 # * local: ${HOME}/.bashrc
 # * WhoFoss
 # -----------------------------------------------
-# * Configurações Gerais
-# -----------------------------------------------
 
 ################# Configurações do Terminal #################
 
@@ -19,10 +17,8 @@ HISTCONTROL=ignoredups
 
 ############# Comandos Básicos
 alias ls='lsd'
-alias ls='ls --color=auto'
-alias ll='ls -alF'
 alias l='ls -CF'
-alias rm='rm -i'
+alias rm='rm -rfv'
 alias cp='cp -i'
 alias mv='mv -i'
 alias grep='grep --color=auto'
@@ -33,9 +29,16 @@ alias h='history'
 alias c='clear'
 alias less='less -S'
 alias e='exit'
-alias cat="bat"
 alias s='sudo'
 alias o='sudo'
+
+# -----------------------------------------------
+# Aliases: cat → bat
+# -----------------------------------------------
+if command -v bat &>/dev/null; then
+    alias cat='bat --paging=never -pp'
+    alias catp='bat'
+fi
 
 ############# Gerenciamento de Arquivos e Diretórios
 alias src='source ~/.bashrc'
@@ -84,6 +87,7 @@ shopt -s autocd
 
 ############# Outros Utilitários
 alias n='nano'
+alias v='vim'
 alias py='python'
 alias py3='python3'
 alias ip='curl ifconfig.me'
@@ -507,3 +511,18 @@ crb() {
     { [[ $- == *i* ]] && source "$b" && echo "✅ Recarregado!"; } || \
     echo "✅ bash.bashrc OK"
 }
+
+############# Cria diretório e entra nele
+mkcd() { mkdir -p "$1" && cd "$1"; }
+
+############# Busca arquivos por nome
+search() { find . -type f -name "$1" 2>/dev/null; }
+
+############# Lista os maiores arquivos/pastas do diretório atual
+biggest() { du -sh * 2>/dev/null | sort -rh | head -${1:-10}; }
+
+############# Cria backup com timestamp de um arquivo
+bak() { cp "$1"{,.bak.$(date +%Y%m%d%H%M%S)}; }
+
+############# Verifica se uma porta está em uso
+portcheck() { ss -tulanp 2>/dev/null | grep ":$1 " || echo "Puerto $1 libre"; }
