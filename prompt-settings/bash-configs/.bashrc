@@ -2,20 +2,22 @@
 # * local: ${HOME}/.bashrc
 # * WhoFoss
 # -----------------------------------------------
+# * General Configuration
+# -----------------------------------------------
 
-################# Configurações do Terminal #################
+################# Terminal Configuration #################
 
-# Habilita checkwinsize
+# Enable checkwinsize
 shopt -s checkwinsize
 
-# Configuração do histórico de comandos
+# Command history configuration
 HISTSIZE=10000
 HISTFILESIZE=20000
 HISTCONTROL=ignoredups
 
 ################# Aliases #################
 
-############# Comandos Básicos
+############# Basic Commands
 alias ls='lsd'
 alias l='ls -CF'
 alias rm='rm -rfv'
@@ -40,7 +42,7 @@ if command -v bat &>/dev/null; then
     alias catp='bat'
 fi
 
-############# Gerenciamento de Arquivos e Diretórios
+############# File and Directory Management
 alias src='source ~/.bashrc'
 alias srcc='clear && source ~/.bashrc'
 alias lists='nano /etc/apt/sources.list'
@@ -53,7 +55,7 @@ alias upgrade='pkg update -y && pkg upgrade -y'
 alias cdd='cd ~/Downloads'
 alias cdm='cd ~/Music'
 alias cdp='cd ~/Pictures'
-alias cdd='cd ~/Documents'
+alias cddc='cd ~/Documents'
 alias cdw='cd ~/Workspace'
 alias cdt='cd ~/Termux'
 alias cds='cd ~/Scripts'
@@ -61,14 +63,14 @@ alias vi='vim'
 alias rmrf='rm -rf'
 alias mkdir='mkdir -p'
 
-# Remove com segurança via trash-cli (em vez de exclusão definitiva)
+# Safe removal via trash-cli (instead of permanent deletion)
 rm-trash() {
-    command -v trash >/dev/null 2>&1 || { echo >&2 "trash-cli não encontrado. Instale com: pkg install trash-cli"; return 1; }
+    command -v trash >/dev/null 2>&1 || { echo >&2 "trash-cli not found. Install with: pkg install trash-cli"; return 1; }
     trash "$@"
 }
 alias rmt='rm-trash'
 
-############# Navegação Rápida em Diretórios
+############# Quick Directory Navigation
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -85,7 +87,7 @@ shopt -s extglob
 # cd when entering just a path
 shopt -s autocd
 
-############# Outros Utilitários
+############# Other Utilities
 alias n='nano'
 alias v='vim'
 alias py='python'
@@ -98,7 +100,7 @@ alias meminfo='cat /proc/meminfo'
 alias diskinfo='df -h'
 alias lsa='ls -a'
 
-############# Ferramentas de Rede e Informações
+############# Network and Information Tools
 alias speedtest='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -'
 alias calc='bc -l'
 alias randpass='openssl rand -base64 12'
@@ -107,94 +109,94 @@ alias diskusage='ncdu'
 alias weather='curl wttr.in'
 alias movieinfo='mediainfo'
 
-############# Calendário e Timestamps
+############# Calendar and Timestamps
 alias cal='cal -3'
 alias timestamp='date +%s'
 
-############# Criptografia e Segurança
+############# Encryption and Security
 alias encrypt='gpg -c'
 alias decrypt='gpg -d'
 alias cve='searchsploit'
 
-############# Informações de Rede
+############# Network Information
 alias whatismyip='curl ifconfig.me'
 alias iptablesflush='iptables -F'
 
-############# Comandos de Sistema
+############# System Commands
 alias rebootsys='sudo reboot'
 alias poweroffsys='sudo poweroff'
 alias encryptfile='openssl aes-256-cbc -a -salt -in'
 alias decryptfile='openssl aes-256-cbc -d -a -in'
 alias qr='qrcode-terminal'
 
-############# Cronômetros e Temporizadores
+############# Timers and Stopwatches
 alias stopwatch='date && time read -sn 1 && echo && date'
-alias timer='read -p "Digite o tempo em segundos: " secs && echo "Timer iniciado por $secs segundos." && sleep $secs && notify-send "Timer finalizado!"'
+alias timer='read -p "Enter time in seconds: " secs && echo "Timer started for $secs seconds." && sleep $secs && notify-send "Timer finished!"'
 
-############# Testes de Rede
+############# Network Tests
 alias speedtest-cli='speedtest-cli --simple'
 alias wifi='termux-wifi-connectioninfo'
 alias battery='termux-battery-status'
 alias shareterm='sshd'
 
-############# Git e Controle de Versão
+############# Git and Version Control
 alias gitinit='git init'
 alias gita='git add .'
 alias gitc='git commit -m'
 alias gitp='git push'
 alias gitlog='git log'
-alias gitconf='git config --global user.name "Seu Nome" && git config --global user.email "seuemail@exemplo.com"'
+alias gitconf='git config --global user.name "Your Name" && git config --global user.email "youremail@example.com"'
 
-############# Saída do Terminal para Termbin
-alias tb="nc termbin.com 9999 2>/dev/null || echo 'Falha ao conectar com termbin'"
+############# Terminal Output to Termbin
+alias tb="nc termbin.com 9999 2>/dev/null || echo 'Failed to connect to termbin'"
 
-############# Testes de Conexão com Ping
-alias google='ping -t 3 www.google.com.br' # Ping ao Google a cada 3 segundos
-alias uol='ping -t 3 www.uol.com.br' # Ping ao UOL a cada 3 segundos
+############# Ping Connection Tests
+alias google='ping -t 3 www.google.com.br' # Ping Google every 3 seconds
+alias uol='ping -t 3 www.uol.com.br' # Ping UOL every 3 seconds
 
 ############# GoFile
 alias gofile="~/gofile"
 
-################# Funções #################
+################# Functions #################
 
-############# Auxiliar de busca no histórico
-# uso: his consulta1 consulta2 consultan...
-# exemplo: his ssh 192 (busca todos os comandos ssh feitos para IPs incluindo 192)
-# exemplo: his sed jsx react (busca todos os comandos sed que incluem "jsx" e "react")
+############# History Search Helper
+# usage: his query1 query2 queryn...
+# example: his ssh 192 (search all ssh commands with IPs including 192)
+# example: his sed jsx react (search all sed commands with "jsx" and "react")
 function his() {
-    # Armazena o histórico completo em uma variável
+    # Store complete history in a variable
     commandlog=$(history | grep -oE "[a-zA-Z]{1}.*" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sort | uniq)
 
-    # Para cada parâmetro fornecido a esta função, executa um grep case insensitive
+    # For each parameter passed to this function, execute case-insensitive grep
     for var in "$@"; do
         commandlog=$(echo "$commandlog" | grep -i "$var")
     done
 
-    # Exibe os resultados
+    # Display results
     echo "$commandlog"
 }
 
-############# Buscador interativo no histórico (fzf)
+############# Interactive History Search (fzf)
 hrun() {
     local selected=$(history | awk '{$1=""; print $0}' | sort -u | fzf \
         --height=80% \
         --border \
-        --prompt="Historico: " \
+        --prompt="History: " \
         --preview='echo {}' \
         --preview-window='down:20%:wrap')
 
     [[ -n "$selected" ]] && {
-        echo -e "\nExecutando: $selected"
+        echo -e "\nExecuting: $selected"
         eval "$selected"
     }
 }
 
-############# Buscador interativo de arquivos/diretórios (fzf)
+############# Interactive File/Directory Search (fzf)
 ff() {
     local selected=$(fzf \
         --height=80% \
         --border \
-        --prompt="Buscar: " \
+        --prompt="Search: " \
         --preview='cat {} 2>/dev/null | head -50' \
         --preview-window='down:50%:wrap' \
         < <(find ${1:-.} 2>/dev/null))
@@ -208,9 +210,9 @@ ff() {
     fi
 }
 
-############# Localizador de IP
+############# IP Locator
 function @ip-locator() {
-    local USAGE="uso: ip-locator <ip> [<ip>..]"
+    local USAGE="usage: ip-locator <ip> [<ip>..]"
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
     curl ipinfo.io/$1 && shift
     while [ "$1" != "" ]; do
@@ -219,9 +221,9 @@ function @ip-locator() {
     done
 }
 
-############# Resolvedor de IP de domínio
+############# Domain IP Resolver
 function @ip-resolver() {
-    local USAGE="uso: ip-resolver <nome-domínio> [<nome-domínio>..]"
+    local USAGE="usage: ip-resolver <domain-name> [<domain-name>..]"
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
     [ $# -eq 0 ] && (>&2 echo $USAGE) && return
     while [ "$1" != "" ]; do
@@ -231,29 +233,29 @@ function @ip-resolver() {
     done
 }
 
-############# Seletor/instalador de pacotes (fzf)
+############# Package Selector/Installer (fzf)
 pkgm() {
     local selected=$(apt-cache pkgnames 2>/dev/null | sort | fzf \
         --multi \
         --height=80% \
         --border \
-        --prompt="Selecione pacotes: " \
+        --prompt="Select packages: " \
         --preview='apt-cache show {} 2>/dev/null | head -100' \
         --preview-window='down:50%:wrap' \
         --bind='ctrl-a:select-all,ctrl-d:deselect-all')
 
     [[ -n "$selected" ]] && {
-        echo -e "\nInstalando: $selected"
+        echo -e "\nInstalling: $selected"
         pkg install -y $selected
     }
 }
 
-############# Validador de arquivos JSON
+############# JSON File Validator
 function jsv() {
-    local USAGE="uso: jsv <arquivo.json> [<arquivo.json>..]"
+    local USAGE="usage: jsv <file.json> [<file.json>..]"
     [ -z "$1" ] && (>&2 echo $USAGE) && return
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
-    command -v python3 >/dev/null 2>&1 || { echo >&2 "Comando python3 não encontrado"; return; }
+    command -v python3 >/dev/null 2>&1 || { echo >&2 "Command python3 not found"; return; }
     while [ "$1" != "" ]; do
         echo -n "$1: "
         cat $1 | python3 -m json.tool >/dev/null && echo "OK"
@@ -261,9 +263,9 @@ function jsv() {
     done
 }
 
-############# Converte nomes de arquivos para minúsculas
+############# Convert Filenames to Lowercase
 function lcfile() {
-    local USAGE="uso: lcfile <arquivo> [<arquivo>..]"
+    local USAGE="usage: lcfile <file> [<file>..]"
 
     [ "$1" = "" ] && (>&2 echo $USAGE) && return
     [ "$1" = "-h" ] && (>&2 echo $USAGE) && return
@@ -272,17 +274,17 @@ function lcfile() {
     while [ "$1" != "" ]; do
         if [ -e "$1" ]; then
             local DST=$(dirname "$1")/$(basename "$1" | tr '[A-Z]' '[a-z]')
-            [ ! -e "${DST}" ] && mv -T "$1" "${DST}" || (>&2 echo "falha ao renomear: $1")
+            [ ! -e "${DST}" ] && mv -T "$1" "${DST}" || (>&2 echo "failed to rename: $1")
         else
-            (>&2 echo "arquivo inválido: $1")
+            (>&2 echo "invalid file: $1")
         fi
         shift
     done
 }
 
-############# Substitui substring nos nomes dos arquivos
+############# Replace Substring in Filenames
 function rsfile() {
-    local USAGE="uso: rsfile <string-busca> <string-substituição> <arquivo> [<arquivo>..]"
+    local USAGE="usage: rsfile <search-string> <replace-string> <file> [<file>..]"
     local sstr=""
     local rstr=""
 
@@ -302,17 +304,17 @@ function rsfile() {
         if [ -e "$1" ]; then
             local FNAME=$(basename "$1")
             local DST=$(dirname "$1")/${FNAME/${sstr}/${rstr}}
-            [ ! -e "${DST}" ] && mv -T "$1" "${DST}" || (>&2 echo "falha ao renomear: $1")
+            [ ! -e "${DST}" ] && mv -T "$1" "${DST}" || (>&2 echo "failed to rename: $1")
         else
-            (>&2 echo "arquivo inválido: $1")
+            (>&2 echo "invalid file: $1")
         fi
         shift
     done
 }
 
-############# Remove caracteres não ASCII
+############# Remove Non-ASCII Characters
 function ascify() {
-    local USAGE="uso: ascify <arquivo> [<arquivo> ..]"
+    local USAGE="usage: ascify <file> [<file>..]"
     [ -z "$1" ] && (>&2 echo $USAGE) && return
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
     while [ "$1" != "" ]; do
@@ -321,27 +323,27 @@ function ascify() {
     done
 }
 
-############# Remove espaços em branco no final
+############# Remove Trailing Whitespace
 function trim-ws() {
-    local USAGE="uso: trim-ws <arquivo> [<arquivo> ..]"
+    local USAGE="usage: trim-ws <file> [<file>..]"
     [ -z "$1" ] && (>&2 echo $USAGE) && return
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
     sed -i 's/[ \t]*$//' $@
 }
 
-############# Substitui tabs por espaços
+############# Replace Tabs with Spaces
 function trim-tab() {
-    local USAGE="uso: trim-tab <arquivo> [<arquivo> ..]"
+    local USAGE="usage: trim-tab <file> [<file>..]"
     [ -z "$1" ] && (>&2 echo $USAGE) && return
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
-    command -v sponge >/dev/null 2>&1 || { echo >&2 "Sponge não encontrado. Instale moreutils"; return; }
+    command -v sponge >/dev/null 2>&1 || { echo >&2 "Sponge not found. Install moreutils"; return; }
     while [ "$1" != "" ]; do
         expand -t 4 "$1" | sponge "$1"
         shift
     done
 }
 
-############# Análise de assinatura de código
+############# Code Signature Analysis
 function code-analysis() {
     for i in $@; do
         echo -n "$i: "
@@ -350,19 +352,19 @@ function code-analysis() {
     done
 }
 
-############# Gera senha aleatória
+############# Generate Random Password
 function genpasswd() {
     local PWDLEN=${1:-32}
     tr -dc A-Za-z0-9_ </dev/urandom | head -c ${PWDLEN} | xargs
 }
 
-############# Gera código PIN
+############# Generate PIN Code
 function genpin() {
     local PINLEN=${1:-4}
     tr -dc 0-9 </dev/urandom | head -c ${PINLEN} | xargs
 }
 
-############# Cifra Ceasar / ROT-13
+############# Caesar Cipher / ROT-13
 function rot13() {
     if [ $# = 0 ]; then
         tr "[a-m][n-z][A-M][N-Z]" "[n-z][a-m][N-Z][A-M]"
@@ -371,55 +373,55 @@ function rot13() {
     fi
 }
 
-############# Mostra threads de um processo
+############# Show Process Threads
 function atop() {
-    [ -z "$1" ] && (>&2 echo "uso: atop <nome-processo>") && return
+    [ -z "$1" ] && (>&2 echo "usage: atop <process-name>") && return
     top -H -p $(pgrep $1)
 }
 
-############# Lista comandos mais usados no histórico
+############# List Most Used Commands in History
 function xtop() {
     local N=${1:-10}
     history | awk '{a[$2]++ } END{for(i in a){print a[i] " " i}}' | sort -rn | head -n $N
 }
 
-############# Encontra arquivos fonte C e C++
+############# Find C and C++ Source Files
 function c-src() {
-    local USAGE="uso: c-src [diretório]"
+    local USAGE="usage: c-src [directory]"
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
     local SRC=.
     [ -n "$1" ] && local SRC="$1"
     find ${SRC} -regextype posix-extended -regex "^.*\.(cpp|hpp|c|h)$" | grep -ve "^\.\/debian"
 }
 
-############# Encontra arquivos fonte Python
+############# Find Python Source Files
 function py-src() {
-    local USAGE="uso: py-src [diretório]"
+    local USAGE="usage: py-src [directory]"
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
     local SRC=.
     [ -n "$1" ] && local SRC="$1"
     find ${SRC} -name "*.py"
 }
 
-############# Encontra arquivos fonte R
+############# Find R Source Files
 function r-src() {
-    local USAGE="uso: r-src [diretório]"
+    local USAGE="usage: r-src [directory]"
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
     local SRC=.
     [ -n "$1" ] && local SRC="$1"
     find ${SRC} -regex ".*\.[rR]"
 }
 
-############# Encontra arquivos JSON
+############# Find JSON Files
 function json-src() {
-    local USAGE="uso: json-src [diretório]"
+    local USAGE="usage: json-src [directory]"
     [ "$1" == "-h" ] && (>&2 echo $USAGE) && return
     local SRC=.
     [ -n "$1" ] && local SRC="$1"
     find ${SRC} -iname "*.json"
 }
 
-############# Extrai arquivos compactados
+############# Extract Compressed Files
 function extract() {
     if [ -f "$1" ]; then
         case "$1" in
@@ -434,24 +436,24 @@ function extract() {
         *.zip) unzip "$1" ;;
         *.Z) uncompress "$1" ;;
         *.7z) 7z x "$1" ;;
-        *) echo "'$1' não pode ser extraído usando a função 'extract'" ;;
+        *) echo "'$1' cannot be extracted using the 'extract' function" ;;
         esac
     else
-        echo "'$1' não é um arquivo válido"
+        echo "'$1' is not a valid file"
     fi
 }
 
-############# Clona repositório
+############# Clone Repository
 function clone() {
     if [ $# -lt 1 ]; then
-        echo "Uso: clone <url_repositório>"
+        echo "Usage: clone <repository_url>"
         return 1
     fi
 
     default_destination="$HOME/clones"
     counter=1
 
-    # Encontra o próximo número disponível para o diretório
+    # Find the next available directory number
     while [ -d "$default_destination/clone-$counter" ]; do
         counter=$((counter + 1))
     done
@@ -460,20 +462,20 @@ function clone() {
 
     git clone -q "$1" "$destination"
     if [ $? -ne 0 ]; then
-        echo "Erro: Falha ao clonar."
+        echo "Error: Failed to clone."
         return 1
     fi
 
-    echo "Clone realizado com sucesso. Repositório clonado para '$destination'"
+    echo "Clone successful. Repository cloned to '$destination'"
 }
 
-############# Tratamento de comando não encontrado
+############# Command Not Found Handler
 command_not_found_handle() {
-    echo -e '\033[1;31m[\033[1;33m!\033[1;31m]\033[0m Comando \033[1;36m'"$1"'\033[0m não encontrado.'
+    echo -e '\033[1;31m[\033[1;33m!\033[1;31m]\033[0m Command \033[1;36m'"$1"'\033[0m not found.'
     return 127
 }
 
-############# Função personalizada para cd
+############# Custom cd Function
 cd() {
     if [ "$1" == ".." ]; then
         builtin cd .. && ls
@@ -484,10 +486,10 @@ cd() {
     fi
 }
 
-############# Backup das configurações
+############# Backup Configuration
 function backup-bashrc() {
     cp ~/.bashrc ~/.bashrc.backup.$(date +%Y%m%d)
-    echo "Backup do .bashrc criado!"
+    echo "Backup of .bashrc created!"
 }
 
 function restore-bashrc() {
@@ -495,34 +497,34 @@ function restore-bashrc() {
     if [ -n "$latest_backup" ]; then
         cp "$latest_backup" ~/.bashrc
         source ~/.bashrc
-        echo ".bashrc restaurado de: $latest_backup"
+        echo ".bashrc restored from: $latest_backup"
     else
-        echo "Nenhum backup encontrado!"
+        echo "No backup found!"
     fi
 }
 
-############# Restaura bash.bashrc do Termux a partir de backup
+############# Restore Termux bash.bashrc from Backup
 crb() {
     b="/data/data/com.termux/files/usr/etc/bash.bashrc"
     [[ ! -f "$b" || $(wc -c < "$b" 2>/dev/null || echo 0) -lt 100 ]] && \
     [[ -f "${b}.bkp" ]] && \
     cat "${b}.bkp" > "$b" && \
-    echo "✅ bash.bashrc restaurado!" && \
-    { [[ $- == *i* ]] && source "$b" && echo "✅ Recarregado!"; } || \
-    echo "✅ bash.bashrc OK"
+    echo "bash.bashrc restored!" && \
+    { [[ $- == *i* ]] && source "$b" && echo "Reloaded!"; } || \
+    echo "bash.bashrc OK"
 }
 
-############# Cria diretório e entra nele
+############# Create Directory and Enter It
 mkcd() { mkdir -p "$1" && cd "$1"; }
 
-############# Busca arquivos por nome
+############# Search Files by Name
 search() { find . -type f -name "$1" 2>/dev/null; }
 
-############# Lista os maiores arquivos/pastas do diretório atual
+############# List Largest Files/Directories in Current Directory
 biggest() { du -sh * 2>/dev/null | sort -rh | head -${1:-10}; }
 
-############# Cria backup com timestamp de um arquivo
+############# Create Backup with Timestamp
 bak() { cp "$1"{,.bak.$(date +%Y%m%d%H%M%S)}; }
 
-############# Verifica se uma porta está em uso
-portcheck() { ss -tulanp 2>/dev/null | grep ":$1 " || echo "Puerto $1 libre"; }
+############# Check if Port is in Use
+portcheck() { ss -tulanp 2>/dev/null | grep ":$1 " || echo "Port $1 is free"; }
