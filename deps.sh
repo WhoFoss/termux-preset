@@ -13,26 +13,30 @@ tsize=$(stty size 2>/dev/null | cut -d' ' -f2)
 line()   { printf '%*s\n' "$tsize" '' | tr ' ' "${1:--}"; }
 center() { local p=$(( (tsize - ${#1}) / 2 )); printf "%${p}s%s\n" '' "$1"; }
 
-clear
-line
-center "Dependency Installer"
-line
-echo
+header() {
+    clear
+    line
+    center "$1"
+    line
+    echo
+}
+
+header "Dependency Installer"
 
 echo -e "\e[33mAtualizando repositórios...\e[0m"
 yes | pkg update
-echo
 
 for entry in "${PKG_PACKAGES[@]}"; do
     IFS=':' read -r cmd pkg <<< "$entry"
     pkg="${pkg:-$cmd}"
-    command -v "$cmd" &>/dev/null || { echo -e "\e[33mInstalando $pkg...\e[0m"; pkg install -y "$pkg"; }
+    if ! command -v "$cmd" &>/dev/null; then
+        header "Instalando $pkg"
+        pkg install -y "$pkg"
+        sleep 0.3
+    fi
 done
 
-echo
-line
-center "Resumo"
-line
+header "Resumo"
 
 for entry in "${PKG_PACKAGES[@]}"; do
     IFS=':' read -r cmd _ <<< "$entry"
