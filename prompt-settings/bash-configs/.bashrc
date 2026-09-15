@@ -19,6 +19,9 @@ HISTCONTROL=ignoredups
 
 ############# Basic Commands
 alias ls='lsd'
+alias h1='lsd -X'
+alias h2='lsd -a'
+alias h3='lsd --tree'
 alias l='ls -CF'
 alias rm='rm -rfv'
 alias cp='cp -i'
