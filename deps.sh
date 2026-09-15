@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PKG_PACKAGES=(
-    "wget" "git" "vim" "bat" "lsd" "ruby"
+   "tmux" "wget" "git" "vim" "bat" "lsd" "ruby"
     "neofetch" "lolcat" "fzf" "fd"
     "tput:ncurses-utils"
     "img2sixel:libsixel"
