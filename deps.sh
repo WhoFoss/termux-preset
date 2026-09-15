@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 
 PKG_PACKAGES=(
-   "tmux" "wget" "git" "vim" "bat" "lsd" "ruby"
-    "neofetch" "fzf" "fd"
+    "tmux" "wget" "git" "lsd"
+    "fzf" "fd" "vim" "bat" 
     "tput:ncurses-utils"
     "img2sixel:libsixel"
-    "img2sixel:x264"
 )
 
-GEM_PACKAGES=("lolcat")
+tsize=$(stty size 2>/dev/null | cut -d' ' -f2)
+[[ -z "$tsize" || "$tsize" -eq 0 ]] && tsize=80
 
-tsize=$(stty size | cut -d' ' -f2)
-line() { printf '%*s\n' "$tsize" '' | tr ' ' "${1:--}"; }
+line()   { printf '%*s\n' "$tsize" '' | tr ' ' "${1:--}"; }
 center() { local p=$(( (tsize - ${#1}) / 2 )); printf "%${p}s%s\n" '' "$1"; }
 
 clear
@@ -21,17 +20,13 @@ line
 echo
 
 echo -e "\e[33mAtualizando repositórios...\e[0m"
-yes | pkg update && yes | pkg upgrade
+yes | pkg update
 echo
 
 for entry in "${PKG_PACKAGES[@]}"; do
     IFS=':' read -r cmd pkg <<< "$entry"
     pkg="${pkg:-$cmd}"
     command -v "$cmd" &>/dev/null || { echo -e "\e[33mInstalando $pkg...\e[0m"; pkg install -y "$pkg"; }
-done
-
-for gem in "${GEM_PACKAGES[@]}"; do
-    command -v "$gem" &>/dev/null || { echo -e "\e[33mInstalando gem $gem...\e[0m"; gem install "$gem"; }
 done
 
 echo
@@ -44,12 +39,6 @@ for entry in "${PKG_PACKAGES[@]}"; do
     command -v "$cmd" &>/dev/null \
         && echo -e "$cmd: \e[32mOK\e[0m" \
         || echo -e "$cmd: \e[31mErro\e[0m"
-done
-
-for gem in "${GEM_PACKAGES[@]}"; do
-    command -v "$gem" &>/dev/null \
-        && echo -e "$gem: \e[32mOK\e[0m" \
-        || echo -e "$gem: \e[31mErro\e[0m"
 done
 
 line
