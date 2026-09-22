@@ -28,9 +28,9 @@ printf "\033[?25l"
 trap 'printf "\033[?12l\033[?25h"' EXIT
 
 # --- Remover motd
-for f in motd motd.sh motd-playstore; do
-    rm -f "$HOME/../usr/etc/$f"
-done
+[ -e "$HOME/../usr/etc/motd" ]           && rm -rf "$HOME/../usr/etc/motd"
+[ -e "$HOME/../usr/etc/motd.sh" ]        && rm -rf "$HOME/../usr/etc/motd.sh"
+[ -e "$HOME/../usr/etc/motd-playstore" ] && rm -rf "$HOME/../usr/etc/motd-playstore"
 
 # --- URLs
 declare -A urls=(
@@ -77,9 +77,5 @@ done
 
 termux-reload-settings
 
-# --- resumo final
-if (( erros == 0 )); then
-    ui_ok "Concluído."
-else
-    ui_erro "Concluído com $erros erro(s)."
-fi
+(( erros == 0 )) && ui_ok "Concluído."
+(( erros > 0 ))  && ui_erro "Concluído com $erros erro(s)."
