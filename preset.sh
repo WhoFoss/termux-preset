@@ -1,21 +1,38 @@
 #!/usr/bin/env bash
 
-r="\033[1;31m" g="\033[1;32m" x="\033[0m"
+# --- cores
+G=$'\e[1;32m'   # verde
+Y=$'\e[1;33m'   # amarelo
+C=$'\e[1;36m'   # ciano
+B=$'\e[1m'      # bold
+D=$'\e[2m'      # dim
+R=$'\e[1;31m'   # vermelho
+N=$'\e[0m'      # reset
 
-ok()  { echo -e "${x}[${g}+${x}] $1"; }
-err() { echo -e "[${r}!${x}] $1"; }
-warn(){ echo -e "[${r}!${x}] $1\n"; }
+# --- helpers de UI
+ui_line() {
+  local name="$1" status="$2" suffix="${3:-}"
+  local dots
+  dots=$(printf '%*s' $((PAD - ${#name})) '' | tr ' ' '.')
+  if [[ "$status" == "ok" ]]; then
+    printf "${B}%s${N} ${D}%s${N} ${G}%s${N}%s\n" "$name" "$dots" "$status" "$suffix"
+  else
+    printf "${B}%s${N} ${D}%s${N} ${R}%s${N}%s\n" "$name" "$dots" "$status" "$suffix"
+  fi
+}
+ui_ok()   { printf "\n${G}+${N} %s\n" "$*"; }
+ui_erro() { printf "\n${R}-${N} %s\n" "$*"; }
 
-echo -en "\033[?25l"  # hide cursor
-trap 'echo -en "\033[?12l\033[?25h"' EXIT  # restore on exit
+# --- cursor
+printf "\033[?25l"
+trap 'printf "\033[?12l\033[?25h"' EXIT
 
-# Remover motd
+# --- Remover motd
 for f in motd motd.sh motd-playstore; do
     rm -f "$HOME/../usr/etc/$f"
 done
-warn "Arquivos motd removidos"
 
-# URLs — formato: ["arquivo"]="destino|url"
+# --- URLs
 declare -A urls=(
     ["aesthetic.jpg"]="${HOME}/.config/neofetch|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/assets/aesthetic.jpg"
     ["logo.png"]="${HOME}/.config/neofetch|https://github.com/WhoFoss/termux-preset/raw/refs/heads/main/assets/logo.png"
@@ -27,23 +44,42 @@ declare -A urls=(
     ["bash.bashrc"]="$PREFIX/etc|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/bash-configs/bash.bashrc"
 )
 
-ok "Iniciando configurações do Termux..."
+# --- padding adaptativo
+PAD=0
+for name in "${!urls[@]}"; do
+    (( ${#name} > PAD )) && PAD=${#name}
+done
+PAD=$((PAD + 10))
 
-total=${#urls[@]}; i=0
+# --- cabeçalho
+clear
+printf "${B}termux-preset${N} ${D}— bootstrap${N}\n\n"
 
+# --- loop
+erros=0
 for arq in "${!urls[@]}"; do
-    i=$((i+1))
     dest="${urls[$arq]%%|*}"
     url="${urls[$arq]##*|}"
 
-    [ -e "$dest/$arq" ] && cp "$dest/$arq" "$dest/$arq.bkp" && ok "Backup: $arq.bkp"
+    suffix=""
+    if [ -e "$dest/$arq" ]; then
+        cp "$dest/$arq" "$dest/$arq.bkp"
+        suffix="  ${Y}(bkp)${N}"
+    fi
 
-    if curl -sLo "$dest/$arq" "$url"; then
-        ok "[$i/$total] $arq aplicado"
+    if curl -fsSLo "$dest/$arq" "$url" 2>/dev/null; then
+        ui_line "$arq" "ok" "$suffix"
     else
-        err "[$i/$total] Falha: $arq"
+        ui_line "$arq" "ERRO"
+        ((erros++))
     fi
 done
 
 termux-reload-settings
-ok "Concluído."
+
+# --- resumo final
+if (( erros == 0 )); then
+    ui_ok "Concluído."
+else
+    ui_erro "Concluído com $erros erro(s)."
+fi
