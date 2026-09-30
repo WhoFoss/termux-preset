@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# --- cores
+### cores ###
 G=$'\e[1;32m'   # verde
 Y=$'\e[1;33m'   # amarelo
 C=$'\e[1;36m'   # ciano
@@ -9,7 +9,7 @@ D=$'\e[2m'      # dim
 R=$'\e[1;31m'   # vermelho
 N=$'\e[0m'      # reset
 
-# --- helpers de UI
+### helpers de UI ###
 ui_line() {
   local name="$1" status="$2" suffix="${3:-}"
   local dots
@@ -23,16 +23,16 @@ ui_line() {
 ui_ok()   { printf "\n${G}+${N} %s\n" "$*"; }
 ui_erro() { printf "\n${R}-${N} %s\n" "$*"; }
 
-# --- cursor
+### cursor ###
 printf "\033[?25l"
 trap 'printf "\033[?12l\033[?25h"' EXIT
 
-# --- Remover motd
+### Remover motd ###
 [ -e "$HOME/../usr/etc/motd" ]           && rm -rf "$HOME/../usr/etc/motd"
 [ -e "$HOME/../usr/etc/motd.sh" ]        && rm -rf "$HOME/../usr/etc/motd.sh"
 [ -e "$HOME/../usr/etc/motd-playstore" ] && rm -rf "$HOME/../usr/etc/motd-playstore"
 
-# --- URLs
+### URLs ###
 declare -A urls=(
     ["aesthetic.jpg"]="${HOME}/.config/neofetch|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/assets/aesthetic.jpg"
     ["logo.png"]="${HOME}/.config/neofetch|https://github.com/WhoFoss/termux-preset/raw/refs/heads/main/assets/logo.png"
@@ -44,18 +44,18 @@ declare -A urls=(
     ["bash.bashrc"]="$PREFIX/etc|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/bash-configs/bash.bashrc"
 )
 
-# --- padding adaptativo
+### padding adaptativo ###
 PAD=0
 for name in "${!urls[@]}"; do
     (( ${#name} > PAD )) && PAD=${#name}
 done
 PAD=$((PAD + 10))
 
-# --- cabeçalho
+### cabeçalho ###
 clear
 printf "${B}termux-preset${N} ${D}— bootstrap${N}\n\n"
 
-# --- loop
+### loop ###
 erros=0
 for arq in "${!urls[@]}"; do
     dest="${urls[$arq]%%|*}"
