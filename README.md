@@ -1,8 +1,3 @@
-### Ok. Admita, ficou top ksksksksks
-<img src="./assets/IMG_20260928_231138.jpg" width="385px"
- width="385px" align="top">
-
----
 
 ### termux-preset
 ```bash
