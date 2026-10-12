@@ -266,6 +266,22 @@ function jsv() {
     done
 }
 
+w() {
+  am start -n com.termux.window/com.termux.window.TermuxFloatActivity >/dev/null \
+    && echo -e '\e[32mWindow up.\e[0m' \
+    || echo -e '\e[31mWindow failed.\e[0m' >&2
+}
+
+
+ii() {
+  local file=${1:?ii: usage: ii <file>}
+  [[ -f $file && -r $file ]] \
+    || { echo "ii: cannot read '$file'" >&2; return 1; }
+  termux-clipboard-set < "$file" \
+    && echo "Copied '$file' to clipboard" >&2 \
+    || { echo "ii: failed to copy '$file'" >&2; return 1; }
+}
+
 ############# Convert Filenames to Lowercase
 function lcfile() {
     local USAGE="usage: lcfile <file> [<file>..]"
