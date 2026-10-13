@@ -34,7 +34,7 @@ trap 'printf "\033[?12l\033[?25h"' EXIT
 
 ### URLs ###
 declare -A urls=(
-    ["aesthetic.jpg"]="${HOME}/.config/neofetch|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/assets/aesthetic.jpg"
+    ["aesthetic.jpg"]="${HOME}/.config/neofetch|https://github.com/WhoFoss/termux-preset/blob/main/assets/aesthetic.jpg"
     ["logo.png"]="${HOME}/.config/neofetch|https://github.com/WhoFoss/termux-preset/raw/refs/heads/main/assets/logo.png"
     ["termux.properties"]="$HOME/.termux|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/prompt-settings/termux-configs/termux.properties"
     [".nanorc"]="$HOME|https://raw.githubusercontent.com/WhoFoss/termux-preset/refs/heads/main/shell-config/config-files/.nanorc"
