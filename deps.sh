@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PKG_PACKAGES=(
-    "tmux" "wget" "git" "lsd"
+    "tmux" "wget" "git" "lsd" "lsix"
     "fzf" "fd" "vim" "bat" 
     "tput:ncurses-utils"
     "img2sixel:libsixel"
