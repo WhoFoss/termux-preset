@@ -47,17 +47,16 @@ print_logo() {
 }
 
 if command -v neofetch &>/dev/null; then
-  # neofetch --colors 1 2 3 4 5 6
+   neofetch --colors 1 2 3 4 5 6
 else
-   # print_logo
+    print_logo
 fi
 
 center() {
   termwidth=${COLUMNS:-80}
   padding="$(printf '%0.1s' ={1..500})"
   printf '\033[1;31m<\033[38;5;27m%*.*s\033[1;31m❪\033[1;33m%s\033[1;31m❫\033[38;5;27m%*.*s\033[1;31m>\033[0m\n' 0 "$(((termwidth-4-${#1})/2))" "$padding" "$1" 0 "$(((termwidth-3-${#1})/2))" "$padding"
-} 
-# center WhoFoss
+}; center WhoFoss
 
 #PS1 USER/ROOT
 if [[ ${EUID} == 0 ]] ; then   
